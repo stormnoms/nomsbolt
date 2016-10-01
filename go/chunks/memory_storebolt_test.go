@@ -5,23 +5,24 @@
 package chunks
 
 import (
+	//"bytes"
 	"testing"
 
 	"github.com/attic-labs/testify/suite"
 )
 
-func TestMemoryStoreTestSuite(t *testing.T) {
+func TestMemoryStoreBoltTestSuite(t *testing.T) {
 	suite.Run(t, &MemoryStoreTestSuite{})
 }
 
-type MemoryStoreTestSuite struct {
+type MemoryStoreBoltTestSuite struct {
 	ChunkBoltStoreTestSuite
 }
 
-func (suite *MemoryStoreTestSuite) SetupTest() {
+func (suite *MemoryStoreBoltTestSuite) SetupTest() {
 	suite.Store = NewMemoryStore()
 }
 
-func (suite *MemoryStoreTestSuite) TearDownTest() {
+func (suite *MemoryStoreBoltTestSuite) TearDownTest() {
 	suite.Store.Close()
 }
