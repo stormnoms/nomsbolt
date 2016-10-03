@@ -6,9 +6,6 @@ package chunks
 
 import (
 	"github.com/attic-labs/testify/suite"
-
-	//"github.com/attic-labs/noms/go/constants"
-	//"github.com/attic-labs/noms/go/hash"
 )
 
 type BoltStoreTestSuite struct {
@@ -17,7 +14,7 @@ type BoltStoreTestSuite struct {
 	putCountFn func() int
 }
 
-func (suite *BoltStoreTestSuite) TestChunkBoltStorePut() {
+func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	input := "abc"
 	c := NewChunk([]byte(input))
 	suite.Store.Put(c)
