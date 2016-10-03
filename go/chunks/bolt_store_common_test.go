@@ -11,13 +11,13 @@ import (
 	//"github.com/attic-labs/noms/go/hash"
 )
 
-type ChunkBoltStoreTestSuite struct {
+type BoltStoreTestSuite struct {
 	suite.Suite
 	Store      ChunkStore
 	putCountFn func() int
 }
 
-func (suite *ChunkBoltStoreTestSuite) TestChunkBoltStorePut() {
+func (suite *BoltStoreTestSuite) TestChunkBoltStorePut() {
 	input := "abc"
 	c := NewChunk([]byte(input))
 	suite.Store.Put(c)

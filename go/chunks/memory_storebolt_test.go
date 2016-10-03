@@ -16,7 +16,7 @@ func TestMemoryStoreBoltTestSuite(t *testing.T) {
 }
 
 type MemoryStoreBoltTestSuite struct {
-	ChunkBoltStoreTestSuite
+	BoltStoreTestSuite
 }
 
 func (suite *MemoryStoreBoltTestSuite) SetupTest() {
