@@ -6,6 +6,7 @@ package chunks
 
 import (
 	"github.com/attic-labs/testify/suite"
+	"fmt"
 )
 
 type BoltStoreTestSuite struct {
@@ -23,6 +24,12 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	// See http://www.di-mgt.com.au/sha_testvectors.html
 	suite.Equal("rmnjb8cjc5tblj21ed4qs821649eduie", h.String())
 
+	mychunk := suite.Store.Get(h)
+	s := string(mychunk.data)
+	fmt.Println(s)
+
+	fmt.Println("The End")
+/*
 	suite.Store.UpdateRoot(h, suite.Store.Root()) // Commit writes
 
 	// And reading it via the API should work...
@@ -41,4 +48,5 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	if suite.putCountFn != nil {
 		suite.Equal(2, suite.putCountFn())
 	}
+*/
 }
