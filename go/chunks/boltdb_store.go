@@ -40,7 +40,7 @@ var (
 	flagsRegisteredBolt = false
 )
 
-func RegisterLeveldbFlagsBolt(flags *flag.FlagSet) {
+func RegisterBoltDBFlags(flags *flag.FlagSet) {
 	if !flagsRegisteredBolt {
 		flagsRegisteredBolt = true
 		flags.IntVar(&ldbFlagsBolt.maxFileHandles, "ldb-max-file-handles", 24, "max number of open file handles")
