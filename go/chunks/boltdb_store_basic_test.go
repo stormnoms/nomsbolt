@@ -6,7 +6,7 @@ package chunks
 
 import (
 	"io/ioutil"
-	"os"
+	//"os"
 	"testing"
 
 	"github.com/attic-labs/testify/suite"
@@ -24,7 +24,8 @@ type BoltDBStoreBasicTestSuite struct {
 
 func (suite *BoltDBStoreBasicTestSuite) SetupTest() {
 	var err error
-	suite.dir, err = ioutil.TempDir(os.TempDir(), "")
+	//suite.dir, err = ioutil.TempDir(os.TempDir(), "")
+	suite.dir, err = ioutil.TempDir("/tmp67", "")
 	suite.NoError(err)
 	suite.factory = NewBoltDBStoreFactory(suite.dir, 24, false)
 	store := suite.factory.CreateStore("name").(*BoltDBStore)
@@ -38,5 +39,5 @@ func (suite *BoltDBStoreBasicTestSuite) SetupTest() {
 func (suite *BoltDBStoreBasicTestSuite) TearDownTest() {
 	suite.Store.Close()
 	suite.factory.Shutter()
-	os.Remove(suite.dir)
+	//os.Remove(suite.dir)
 }
