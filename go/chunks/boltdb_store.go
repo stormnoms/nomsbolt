@@ -18,8 +18,9 @@ import (
 	flag "github.com/juju/gnuflag"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/errors"
-	"github.com/syndtr/goleveldb/leveldb/filter"
+	//"github.com/syndtr/goleveldb/leveldb/filter"
 	"github.com/syndtr/goleveldb/leveldb/opt"
+	"github.com/boltdb/bolt"
 )
 
 /*
@@ -46,14 +47,6 @@ func RegisterBoltDBFlags(flags *flag.FlagSet) {
 		flags.IntVar(&ldbFlagsBolt.maxFileHandles, "ldb-max-file-handles", 24, "max number of open file handles")
 		flags.BoolVar(&ldbFlagsBolt.dumpStats, "ldb-dump-stats", false, "print get/has/put counts on close")
 	}
-}
-
-func NewBoltDBStoreUseFlags(dir, ns string) *BoltDBStore {
-	return newBoltDBStore(newBoltDBBackingStore(dir, ldbFlagsBolt.maxFileHandles, ldbFlagsBolt.dumpStats), []byte(ns), true)
-}
-
-func NewBoltDBStore(dir, ns string, maxFileHandles int, dumpStats bool) *BoltDBStore {
-	return newBoltDBStore(newBoltDBBackingStore(dir, maxFileHandles, dumpStats), []byte(ns), true)
 }
 
 func newBoltDBStore(store *internalBoltDBStore, ns []byte, closeBackingStore bool) *BoltDBStore {
@@ -150,24 +143,19 @@ func (l *BoltDBStore) setVersIfUnset() {
 }
 
 type internalBoltDBStore struct {
-	db                                     *rateLimitedLevelDB
+	db                                     *bolt.DB
 	mu                                     sync.Mutex
 	getCount, hasCount, putCount, putBytes int64
 	dumpStats                              bool
 }
 
-func newBoltDBBackingStore(dir string, maxFileHandles int, dumpStats bool) *internalBoltDBStore {
+func newBoltDBBackingStore(dir string, dumpStats bool) *internalBoltDBStore {
 	d.PanicIfTrue(dir == "", "dir cannot be empty")
 	d.PanicIfError(os.MkdirAll(dir, 0700))
-	db, err := leveldb.OpenFile(dir, &opt.Options{
-		Compression:            opt.NoCompression,
-		Filter:                 filter.NewBloomFilter(10), // 10 bits/key
-		OpenFilesCacheCapacity: maxFileHandles,
-		WriteBuffer:            1 << 24, // 16MiB,
-	})
+    db, err := bolt.Open("bolt.db", 0644, nil)
 	d.Chk.NoError(err, "opening internalBoltDBStore in %s", dir)
 	return &internalBoltDBStore{
-		db:        &rateLimitedLevelDB{db, make(chan struct{}, maxFileHandles)},
+		db:        db,
 		dumpStats: dumpStats,
 	}
 }
@@ -246,7 +234,7 @@ func (l *internalBoltDBStore) putBatch(b *leveldb.Batch, numBytes int) {
 func (l *internalBoltDBStore) Close() error {
 	l.db.Close()
 	if l.dumpStats {
-		fmt.Println("--LevelDB Stats--")
+		fmt.Println("--Bolt Stats--")
 		fmt.Println("GetCount: ", l.getCount)
 		fmt.Println("HasCount: ", l.hasCount)
 		fmt.Println("PutCount: ", l.putCount)
@@ -255,17 +243,16 @@ func (l *internalBoltDBStore) Close() error {
 	return nil
 }
 
-func NewBoltDBStoreFactory(dir string, maxHandles int, dumpStats bool) Factory {
-	return &BoltDBStoreFactory{dir, maxHandles, dumpStats, newBoltDBBackingStore(dir, maxHandles, dumpStats)}
+func NewBoltDBStoreFactory(dir string, dumpStats bool) Factory {
+	return &BoltDBStoreFactory{dir, dumpStats, newBoltDBBackingStore(dir, dumpStats)}
 }
 
 func NewBoltDBStoreFactoryUseFlags(dir string) Factory {
-	return NewBoltDBStoreFactory(dir, ldbFlagsBolt.maxFileHandles, ldbFlagsBolt.dumpStats)
+	return NewBoltDBStoreFactory(dir, ldbFlagsBolt.dumpStats)
 }
 
 type BoltDBStoreFactory struct {
 	dir            string
-	maxFileHandles int
 	dumpStats      bool
 	store          *internalBoltDBStore
 }

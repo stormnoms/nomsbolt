@@ -27,7 +27,7 @@ func (suite *BoltDBStoreBasicTestSuite) SetupTest() {
 	//suite.dir, err = ioutil.TempDir(os.TempDir(), "")
 	suite.dir, err = ioutil.TempDir("/tmp67", "")
 	suite.NoError(err)
-	suite.factory = NewBoltDBStoreFactory(suite.dir, 24, false)
+	suite.factory = NewBoltDBStoreFactory(suite.dir, false)
 	store := suite.factory.CreateStore("name").(*BoltDBStore)
 	suite.putCountFn = func() int {
 		return int(store.putCount)
