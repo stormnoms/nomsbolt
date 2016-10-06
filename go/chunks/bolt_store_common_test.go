@@ -36,8 +36,6 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	oldRoot = suite.Store.Root()
 	suite.False(oldRoot.IsEmpty())
 
-	fmt.Println("The End 101")
-/*
 	// And reading it via the API should work...
 	assertInputInStore(input, h, suite.Store, suite.Assert())
 	if suite.putCountFn != nil {
@@ -54,5 +52,4 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	if suite.putCountFn != nil {
 		suite.Equal(2, suite.putCountFn())
 	}
-*/
 }
