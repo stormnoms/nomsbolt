@@ -27,8 +27,12 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	mychunk := suite.Store.Get(h)
 	s := string(mychunk.data)
 	fmt.Println(s)
-	suite.Store.Root()
-	fmt.Println("The End")
+
+	//suite.Store.Root()
+	oldRoot := suite.Store.Root()
+	suite.True(oldRoot.IsEmpty())
+
+	fmt.Println("The End 101")
 /*
 	suite.Store.UpdateRoot(h, suite.Store.Root()) // Commit writes
 

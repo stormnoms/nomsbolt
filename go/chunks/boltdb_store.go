@@ -75,13 +75,7 @@ type BoltDBStore struct {
 
 func (l *BoltDBStore) Root() hash.Hash {
 	d.PanicIfFalse(l.internalBoltDBStore != nil, "Cannot use BoltDBStore after Close().")
-
-	fmt.Println("rootKey = ",l.rootKey)
-	myhash := hash.FromData([]byte("sam"))
-	// Code is breaking here understand this in LevelDB and other chunk interfaces
-	//mycheck := l.rootByKey(myhash)
-	//fmt.Println("mycheck = ",mycheck)
-	return myhash
+	return l.rootByKey(l.rootKey)
 }
 
 func (l *BoltDBStore) UpdateRoot(current, last hash.Hash) bool {
@@ -171,6 +165,9 @@ func newBoltDBBackingStore(dir string, dumpStats bool) *internalBoltDBStore {
 
 func (l *internalBoltDBStore) rootByKey(key []byte) hash.Hash {
 	// val, err := l.db.Get(key, nil)
+	return hash.Hash{}
+// MIA FIX THIS !!!
+/*
 	val, err := l.viewBolt(key)
 
 	if err == errors.ErrNotFound {
@@ -179,6 +176,7 @@ func (l *internalBoltDBStore) rootByKey(key []byte) hash.Hash {
 	d.Chk.NoError(err)
 
 	return hash.Parse(string(val))
+*/
 }
 
 func (l *internalBoltDBStore) updateRootByKey(key []byte, current, last hash.Hash) bool {
