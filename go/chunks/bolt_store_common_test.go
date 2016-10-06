@@ -32,10 +32,12 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	oldRoot := suite.Store.Root()
 	suite.True(oldRoot.IsEmpty())
 
+	suite.Store.UpdateRoot(h, suite.Store.Root()) // Commit writes
+	oldRoot = suite.Store.Root()
+	suite.False(oldRoot.IsEmpty())
+
 	fmt.Println("The End 101")
 /*
-	suite.Store.UpdateRoot(h, suite.Store.Root()) // Commit writes
-
 	// And reading it via the API should work...
 	assertInputInStore(input, h, suite.Store, suite.Assert())
 	if suite.putCountFn != nil {
