@@ -165,18 +165,22 @@ func newBoltDBBackingStore(dir string, dumpStats bool) *internalBoltDBStore {
 
 func (l *internalBoltDBStore) rootByKey(key []byte) hash.Hash {
 	// val, err := l.db.Get(key, nil)
-	return hash.Hash{}
-// MIA FIX THIS !!!
 /*
 	val, err := l.viewBolt(key)
+	fmt.Println("val = ", val)
+	fmt.Println("err = ", err)
+	return hash.Hash{}
+*/
 
-	if err == errors.ErrNotFound {
+	val, err := l.viewBolt(key)
+
+	if len(val) == 0 {
 		return hash.Hash{}
 	}
 	d.Chk.NoError(err)
 
 	return hash.Parse(string(val))
-*/
+
 }
 
 func (l *internalBoltDBStore) updateRootByKey(key []byte, current, last hash.Hash) bool {
@@ -269,7 +273,7 @@ func (l *internalBoltDBStore) viewBolt(key []byte) (val []byte, err error) {
 		return nil, fmt.Errorf("viewBolt error")
 	}
 
-	fmt.Println(string(val))
+	fmt.Println("viewBolt return val = ",string(val))
 	return val, nil
 }
 
