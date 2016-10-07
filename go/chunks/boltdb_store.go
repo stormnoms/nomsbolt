@@ -108,14 +108,14 @@ func (l *BoltDBStore) Put(c Chunk) {
 func (l *BoltDBStore) PutMany(chunks []Chunk) (e BackpressureError) {
 	d.PanicIfFalse(l.internalBoltDBStore != nil, "Cannot use BoltDBStore after Close().")
 	l.versionSetOnce.Do(l.setVersIfUnset)
-	numBytes := 0
-	b := new(leveldb.Batch)
+	//numBytes := 0
+	//b := new(leveldb.Batch)
 	for _, c := range chunks {
-		data := snappy.Encode(nil, c.Data())
-		numBytes += len(data)
-		b.Put(l.toChunkKey(c.Hash()), data)
+		//data := snappy.Encode(nil, c.Data())
+		//numBytes += len(data)
+		l.Put(c)
 	}
-	l.putBatch(b, numBytes)
+	//l.putBatch(b, numBytes)
 	return
 }
 
