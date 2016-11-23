@@ -6,7 +6,6 @@ package chunks
 
 import (
 	"github.com/attic-labs/testify/suite"
-	//"fmt"
 )
 
 type BoltStoreTestSuite struct {
@@ -24,10 +23,9 @@ func (suite *BoltStoreTestSuite) TestBoltStorePut() {
 	// See http://www.di-mgt.com.au/sha_testvectors.html
 	suite.Equal("rmnjb8cjc5tblj21ed4qs821649eduie", h.String())
 
-	// For now leave here for debugging...
-	//mychunk := suite.Store.Get(h)
-	//s := string(mychunk.data)
-	//fmt.Println(s)
+	mychunk := suite.Store.Get(h)
+	s := string(mychunk.data)
+	suite.Equal("abc",s)
 
 	//suite.Store.Root()
 	oldRoot := suite.Store.Root()
