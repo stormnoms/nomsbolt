@@ -5,6 +5,7 @@
 package chunks
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -17,7 +18,7 @@ import (
 	"github.com/stormasm/nomsbolt/go/d"
 	"github.com/stormasm/nomsbolt/go/hash"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/syndtr/goleveldb/leveldb/errors"
+	//"github.com/syndtr/goleveldb/leveldb/errors"
 	//"github.com/syndtr/goleveldb/leveldb/filter"
 	//"github.com/syndtr/goleveldb/leveldb/opt"
 	"github.com/boltdb/bolt"
@@ -39,6 +40,7 @@ type BoltDBStoreFlags struct {
 var (
 	ldbFlagsBolt        = BoltDBStoreFlags{24, false}
 	flagsRegisteredBolt = false
+	ErrNotFound         = errors.New("boltdb: not found")
 )
 
 func RegisterBoltDBFlags(flags *flag.FlagSet) {
@@ -205,7 +207,7 @@ func (l *internalBoltDBStore) getByKey(key []byte, ref hash.Hash) Chunk {
 	//compressed, err := l.db.Get(key, nil)
 	compressed, err := l.viewBolt(key)
 	l.getCount++
-	if err == errors.ErrNotFound {
+	if err == ErrNotFound {
 		return EmptyChunk
 	}
 	d.Chk.NoError(err)
@@ -225,7 +227,7 @@ func (l *internalBoltDBStore) hasByKey(key []byte) bool {
 func (l *internalBoltDBStore) versByKey(key []byte) string {
 	//val, err := l.db.Get(key, nil)
 	val, err := l.viewBolt(key)
-	if err == errors.ErrNotFound {
+	if err == ErrNotFound {
 		return constants.NomsVersion
 	}
 	d.Chk.NoError(err)
@@ -271,10 +273,9 @@ func (l *internalBoltDBStore) viewBolt(key []byte) (val []byte, err error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("viewBolt error")
+		return nil, ErrNotFound
 	}
 
-	//fmt.Println("viewBolt return val = ",string(val))
 	return val, nil
 }
 
