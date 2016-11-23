@@ -17,10 +17,6 @@ import (
 	"github.com/stormasm/nomsbolt/go/constants"
 	"github.com/stormasm/nomsbolt/go/d"
 	"github.com/stormasm/nomsbolt/go/hash"
-	"github.com/syndtr/goleveldb/leveldb"
-	//"github.com/syndtr/goleveldb/leveldb/errors"
-	//"github.com/syndtr/goleveldb/leveldb/filter"
-	//"github.com/syndtr/goleveldb/leveldb/opt"
 	"github.com/boltdb/bolt"
 )
 
@@ -303,15 +299,18 @@ func (l *internalBoltDBStore) putByKey(key []byte, c Chunk) {
 	l.putBytes += int64(len(value))
 }
 
+/*
+I am pretty sure I will not need to implement this...
+
 func (l *internalBoltDBStore) putBatch(b *leveldb.Batch, numBytes int) {
-	/*
 		err := l.db.Write(b, nil)
 		d.Chk.NoError(err)
 		l.putCount += int64(b.Len())
 		l.putBytes += int64(numBytes)
-	*/
+
 	fmt.Println("Currently not yet implemented")
 }
+*/
 
 func (l *internalBoltDBStore) Close() error {
 	l.db.Close()
