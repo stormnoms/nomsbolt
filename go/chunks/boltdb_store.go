@@ -155,7 +155,8 @@ type internalBoltDBStore struct {
 func newBoltDBBackingStore(dir string, dumpStats bool) *internalBoltDBStore {
 	d.PanicIfTrue(dir == "", "dir cannot be empty")
 	d.PanicIfError(os.MkdirAll(dir, 0700))
-	db, err := bolt.Open("bolt.db", 0644, nil)
+	filename := dir + "/bolt.db"
+	db, err := bolt.Open(filename, 0644, nil)
 	d.Chk.NoError(err, "opening internalBoltDBStore in %s", dir)
 	return &internalBoltDBStore{
 		db:        db,
@@ -273,7 +274,7 @@ func (l *internalBoltDBStore) viewBolt(key []byte) (val []byte, err error) {
 		return nil, fmt.Errorf("viewBolt error")
 	}
 
-	fmt.Println("viewBolt return val = ",string(val))
+	//fmt.Println("viewBolt return val = ",string(val))
 	return val, nil
 }
 
